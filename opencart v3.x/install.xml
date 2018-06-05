@@ -1,7 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modification>
-	<name>Pushketing for OpenCart</name>
-	<version>v1</version>
-	<code>Pushketing</code>
-	<author>Jan Jusko</author>
+    <name>Pushketing for OpenCart</name>
+    <version>v1</version>
+    <code>Pushketing</code>
+    <author>Jan Jusko</author>
+    <file path="catalog/controller/product/product.php">
+        <operation>
+            <search><![CDATA[if ($product_info) {]]></search>
+            <add position="after"><![CDATA[
+            if($this->config->get('pushketing_status')){
+                $cookie_name = 'pk_customer';
+                if(isset($_COOKIE[$cookie_name])) {
+                    $this->load->model('extension/module/pushketing');
+                    $this->model_extension_pushketing->postTag('product_view', $product_id, $_COOKIE[$cookie_name]);
+                }
+            }
+			]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0) {]]></search>
+            <add position="before"><![CDATA[
+            public function postTag($keyword, $value, $customer) {
+                $tag = array(
+                    'keyword' => $keyword,
+                    'value' => $value
+                );
+
+                $request = array(
+                    'timestamp' => time(),
+                    'token' => $this->config->get('pushketing_token'),
+                    'subscriber_id' => $customer,
+                    'tag' => array($tag)
+                );
+
+                $ch = curl_init($this->config->get('pushketing_endpoint'));
+                $payload = json_encode($request);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+                $headers = array(
+                    'Content-Type: application/json'
+                );
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_exec($ch);
+                curl_close($ch);
+            }
+			]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0) {]]></search>
+            <add position="after"><![CDATA[
+            if($this->config->get('pushketing_status')){
+                $cookie_name = 'pk_customer';
+                if(isset($_COOKIE[$cookie_name])) {
+                    $this->postTag('product_view', $product_id, $_COOKIE[$cookie_name]);
+                }
+            }
+			]]></add>
+        </operation>
+    </file>
 </modification>
