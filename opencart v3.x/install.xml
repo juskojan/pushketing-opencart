@@ -58,5 +58,19 @@
             }
 			]]></add>
         </operation>
+        <operation>
+            <search><![CDATA[public function remove($cart_id) {]]></search>
+            <add position="after"><![CDATA[
+            if($this->config->get('pushketing_status')) {
+                $cart_query = $this->db->query("SELECT product_id FROM " . DB_PREFIX . "cart WHERE cart_id = '" . (int)$cart_id . "' AND api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "'");
+                foreach ($cart_query->rows as $cart) {
+                    $cookie_name = 'pk_customer';
+                    if (isset($_COOKIE[$cookie_name])) {
+                        $this->postTag('product_cart_remove', $cart['product_id'], $_COOKIE[$cookie_name]);
+                    }
+                }
+            }
+			]]></add>
+        </operation>
     </file>
 </modification>
