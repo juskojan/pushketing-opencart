@@ -21,7 +21,7 @@ class ModelExtensionModulePushketing extends Model {
             'tag' => array($tag)
         );
 
-        $ch = curl_init($this->config->get('pushketing_endpoint'));
+        $ch = curl_init($this->config->get('pushketing_endpoint') . '/tag');
         $payload = json_encode($request);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         $headers = array(

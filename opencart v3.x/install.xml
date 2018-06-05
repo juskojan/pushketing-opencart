@@ -12,11 +12,13 @@
                 $cookie_name = 'pk_customer';
                 if(isset($_COOKIE[$cookie_name])) {
                     $this->load->model('extension/module/pushketing');
-                    $this->model_extension_pushketing->postTag('product_view', $product_id, $_COOKIE[$cookie_name]);
+                    $this->model_extension_module_pushketing->postTag('product_view', $product_id, $_COOKIE[$cookie_name]);
                 }
             }
 			]]></add>
         </operation>
+    </file>
+    <file path="system/library/cart/cart.php">
         <operation>
             <search><![CDATA[public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0) {]]></search>
             <add position="before"><![CDATA[
@@ -33,7 +35,7 @@
                     'tag' => array($tag)
                 );
 
-                $ch = curl_init($this->config->get('pushketing_endpoint'));
+                $ch = curl_init($this->config->get('pushketing_endpoint') . '/tag');
                 $payload = json_encode($request);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
                 $headers = array(
