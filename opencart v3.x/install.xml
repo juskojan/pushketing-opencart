@@ -53,7 +53,7 @@
             if($this->config->get('pushketing_status')){
                 $cookie_name = 'pk_customer';
                 if(isset($_COOKIE[$cookie_name])) {
-                    $this->postTag('product_view', $product_id, $_COOKIE[$cookie_name]);
+                    $this->postTag('product_cart_add', $product_id, $_COOKIE[$cookie_name]);
                 }
             }
 			]]></add>
