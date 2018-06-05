@@ -50,9 +50,16 @@
 			<div class="form-group">
 				<label class="col-sm-2 control-label" for="input-token">{{ entry_token }}</label>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" value="{{ pushketing_token }}" name="pushketing_token">
+					<input type="text" id="input-token" class="form-control" value="{{ pushketing_token }}" name="pushketing_token">
 				</div>
 			</div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-endpoint">{{ entry_endpoint }}</label>
+                <div class="col-sm-10">
+                    <input type="text" id="input-endpoint" class="form-control" value="{{ pushketing_endpoint }}" name="pushketing_endpoint">
+                </div>
+            </div>
 		</form>
       </div>
     </div>

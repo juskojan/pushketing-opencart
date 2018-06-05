@@ -23,6 +23,7 @@ class ControllerExtensionModulePushketing extends Controller {
         $data['text_disabled'] = $this->language->get('text_disabled');
         $data['entry_status'] = $this->language->get('entry_status');
         $data['entry_token'] = $this->language->get('entry_token');
+        $data['entry_endpoint'] = $this->language->get('entry_endpoint');
         $data['button_save'] = $this->language->get('button_save');
         $data['button_cancel'] = $this->language->get('button_cancel');
 
@@ -58,7 +59,6 @@ class ControllerExtensionModulePushketing extends Controller {
 		);
 
 		$data['action'] = $this->url->link('extension/module/pushketing', 'user_token=' . $this->session->data['user_token'], true);
-
 		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true);
 
         if (isset($this->request->post['pushketing_status'])) {
@@ -71,6 +71,12 @@ class ControllerExtensionModulePushketing extends Controller {
             $data['pushketing_token'] = $this->request->post['pushketing_token'];
         } else {
             $data['pushketing_token'] = $this->config->get('pushketing_token');
+        }
+
+        if (isset($this->request->post['pushketing_endpoint'])) {
+            $data['pushketing_endpoint'] = $this->request->post['pushketing_endpoint'];
+        } else {
+            $data['pushketing_endpoint'] = $this->config->get('pushketing_endpoint');
         }
 		
 		$data['user_token'] = $this->session->data['user_token'];

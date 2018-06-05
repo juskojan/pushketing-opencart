@@ -11,6 +11,7 @@ $_['text_edit']        = 'Edit Pushketing Module';
 // Entries
 $_['entry_status']     = 'Status';
 $_['entry_token']      = 'Pushketing Token';
+$_['entry_endpoint']   = 'Pushketing API endpoint';
 
 // Errors
 $_['error_permission'] = 'Warning: You do not have permission to modify pushketing module!';
