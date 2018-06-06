@@ -28,6 +28,7 @@ class ModelExtensionModulePushketing extends Model {
             'Content-Type: application/json'
         );
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_exec($ch);
         curl_close($ch);
     }
