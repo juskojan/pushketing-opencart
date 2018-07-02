@@ -15,3 +15,5 @@ $_['entry_endpoint']   = 'Pushketing API endpoint';
 
 // Errors
 $_['error_permission'] = 'Warning: You do not have permission to modify pushketing module!';
+$_['error_module_pushketing_token'] = 'Please insert your Pushketing Token. You will find it in your Pushketing administration.';
+$_['error_module_pushketing_endpoint'] = 'Please insert Pushketing API endpoint.';

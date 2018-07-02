@@ -13,6 +13,16 @@ class ControllerExtensionModulePushketing extends Controller {
         exit(json_encode($response));
     }
 
+    private function forbiddenRequest() {
+        header('Content-Type: application/json');
+        header('HTTP/1.1 403 Forbidden');
+        $response   =   array(
+            'code'      =>  403,
+            'message'   =>  'Forbidden, please enable your module in OpenCart.',
+        );
+        exit(json_encode($response));
+    }
+
     /**
      *  IMPLEMENTATION OF /connectivityTest ENDPOINT
      */
@@ -23,15 +33,19 @@ class ControllerExtensionModulePushketing extends Controller {
             $type           = $space_explode[0];
             // CHECK THE AUTH HEADER IF MATCHES THE TOKEN
             if ($type == "Basic" && $_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('pushketing_token')) {
-                $response   =   array(
-                    'code'      =>  200,
-                    'message'   =>  "OK",
-                    'timestamp' =>  time()
-                );
+                if($this->config->get('module_pushketing_status')){
+                    $response   =   array(
+                        'code'      =>  200,
+                        'message'   =>  "OK",
+                        'timestamp' =>  time()
+                    );
 
-                header('Content-Type: application/json');
-                header('HTTP/1.1 200 OK');
-                exit(json_encode($response));
+                    header('Content-Type: application/json');
+                    header('HTTP/1.1 200 OK');
+                    exit(json_encode($response));
+                } else {
+                    $this->forbiddenRequest();
+                }
             } else {
                 $this->unauthorizedRequest();
             }
@@ -50,12 +64,16 @@ class ControllerExtensionModulePushketing extends Controller {
             $type           = $space_explode[0];
             // CHECK THE AUTH HEADER IF MATCHES THE TOKEN
             if ($type == "Basic" && $_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('pushketing_token')) {
-                $this->load->model('extension/module/pushketing');
-                $response = $this->model_extension_module_pushketing->getOrderStatuses();
+                if($this->config->get('module_pushketing_status')) {
+                    $this->load->model('extension/module/pushketing');
+                    $response = $this->model_extension_module_pushketing->getOrderStatuses();
 
-                header('Content-Type: application/json');
-                header('HTTP/1.1 200 OK');
-                exit(json_encode($response));
+                    header('Content-Type: application/json');
+                    header('HTTP/1.1 200 OK');
+                    exit(json_encode($response));
+                } else {
+                    $this->forbiddenRequest();
+                }
             } else {
                 $this->unauthorizedRequest();
             }
@@ -74,12 +92,16 @@ class ControllerExtensionModulePushketing extends Controller {
             $type           = $space_explode[0];
 
             if ($type == "Basic" && $_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('pushketing_token')) {
-                $this->load->model('extension/module/pushketing');
-                $response = $this->model_extension_module_pushketing->getProducts();
+                if($this->config->get('module_pushketing_status')) {
+                    $this->load->model('extension/module/pushketing');
+                    $response = $this->model_extension_module_pushketing->getProducts();
 
-                header('Content-Type: application/json');
-                header('HTTP/1.1 200 OK');
-                exit(json_encode($response));
+                    header('Content-Type: application/json');
+                    header('HTTP/1.1 200 OK');
+                    exit(json_encode($response));
+                } else {
+                    $this->forbiddenRequest();
+                }
             } else {
                 $this->unauthorizedRequest();
             }
