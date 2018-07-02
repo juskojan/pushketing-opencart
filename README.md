@@ -12,5 +12,5 @@ OpenCart modules for pushketing integration.
 - <code>product_view</code> - customer viewed a product :heavy_check_mark:
 - <code>product_cart_add</code> - customer added product to cart :heavy_check_mark:
 - <code>product_cart_remove</code> - customer removed product from cart :heavy_check_mark:
-- <code>product_abandon</code> - customer abandoned product in cart :x:
+- <code>product_abandon</code> - customer abandoned product in cart :heavy_check_mark:
 - <code>product_buy</code> - customer bought product in :heavy_check_mark:

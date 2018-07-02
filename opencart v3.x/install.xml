@@ -81,7 +81,9 @@
             if($this->config->get('module_pushketing_status')){
                 $abandoned_query = $this->db->query("SELECT pk_customer, product_id FROM " . DB_PREFIX . "cart WHERE (api_id > '0' OR customer_id = '0') AND date_added < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
                 foreach ($abandoned_query->rows as $cart_row) {
-                    $this->postTag('product_abandon', $cart_row['product_id'], $cart_row['pk_customer']);
+                    if($cart_row['pk_customer']) {
+                        $this->postTag('product_abandon', $cart_row['product_id'], $cart_row['pk_customer']);
+                    }
                 }
             }
 			]]></add>
