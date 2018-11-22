@@ -19,12 +19,14 @@ class ControllerExtensionModulePushketing extends Controller {
 
         /* Language variables */
         $data['heading_title'] = $this->language->get('heading_title');
+
         $data['text_edit'] = $this->language->get('text_edit');
         $data['text_enabled'] = $this->language->get('text_enabled');
         $data['text_disabled'] = $this->language->get('text_disabled');
+
         $data['entry_status'] = $this->language->get('entry_status');
         $data['entry_token'] = $this->language->get('entry_token');
-        $data['entry_endpoint'] = $this->language->get('entry_endpoint');
+
         $data['button_save'] = $this->language->get('button_save');
         $data['button_cancel'] = $this->language->get('button_cancel');
 
@@ -90,11 +92,7 @@ class ControllerExtensionModulePushketing extends Controller {
             $data['module_pushketing_token'] = $this->config->get('module_pushketing_token');
         }
 
-        if (isset($this->request->post['module_pushketing_endpoint'])) {
-            $data['module_pushketing_endpoint'] = $this->request->post['module_pushketing_endpoint'];
-        } else {
-            $data['module_pushketing_endpoint'] = $this->config->get('module_pushketing_endpoint');
-        }
+        $data['module_pushketing_endpoint'] = "https://app.pushketing.com/api/tag";
 
         /* Environment */
         $data['user_token'] = $this->session->data['user_token'];
@@ -106,15 +104,10 @@ class ControllerExtensionModulePushketing extends Controller {
         $this->response->setOutput($this->load->view('extension/module/pushketing', $data));
     }
 
-
-    /* Function runs at installation */
-    public function install() {
-        $this->db->query("ALTER TABLE `" . DB_PREFIX . "cart` ADD `pk_customer` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT ''");
-    }
-
     /* Function runs at uninstall */
     public function uninstall() {
-        $this->db->query("ALTER TABLE `" . DB_PREFIX . "cart` DROP `pk_customer`");
+        $this->load->model('setting/setting');
+        $this->model_setting_setting->deleteSetting('module_pushketing');
     }
 
     /* Form submit validation function */

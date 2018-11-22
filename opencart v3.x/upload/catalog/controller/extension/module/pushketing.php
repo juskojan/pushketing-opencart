@@ -32,7 +32,7 @@ class ControllerExtensionModulePushketing extends Controller {
             $space_explode  = explode(" ", $_SERVER['HTTP_AUTHORIZATION']);
             $type           = $space_explode[0];
             // CHECK THE AUTH HEADER IF MATCHES THE TOKEN
-            if ($type == "Basic" && $_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('pushketing_token')) {
+            if ($type == "Basic" && $_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('module_pushketing_token')) {
                 if($this->config->get('module_pushketing_status')){
                     $response   =   array(
                         'code'      =>  200,
@@ -63,7 +63,7 @@ class ControllerExtensionModulePushketing extends Controller {
             $space_explode  = explode(" ", $_SERVER['HTTP_AUTHORIZATION']);
             $type           = $space_explode[0];
             // CHECK THE AUTH HEADER IF MATCHES THE TOKEN
-            if ($type == "Basic" && $_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('pushketing_token')) {
+            if ($type == "Basic" && $_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('module_pushketing_token')) {
                 if($this->config->get('module_pushketing_status')) {
                     $this->load->model('extension/module/pushketing');
                     $response = $this->model_extension_module_pushketing->getOrderStatuses();
@@ -91,7 +91,7 @@ class ControllerExtensionModulePushketing extends Controller {
             $space_explode  = explode(" ", $_SERVER['HTTP_AUTHORIZATION']);
             $type           = $space_explode[0];
 
-            if ($type == "Basic" && $_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('pushketing_token')) {
+            if ($type == "Basic" && $_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('module_pushketing_token')) {
                 if($this->config->get('module_pushketing_status')) {
                     $this->load->model('extension/module/pushketing');
                     $response = $this->model_extension_module_pushketing->getProducts();

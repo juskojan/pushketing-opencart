@@ -9,6 +9,10 @@ class ModelExtensionModulePushketing extends Model {
      * Client POST API request sending tag (keyword=value) about specific customer.
      */
     public function postTag($keyword, $value, $customer) {
+        if (!is_array($value)) {
+            $value = array($value);
+        }
+
         $tag = array(
             'keyword' => $keyword,
             'value' => $value
@@ -16,12 +20,12 @@ class ModelExtensionModulePushketing extends Model {
 
         $request = array(
             'timestamp' => time(),
-            'token' => $this->config->get('pushketing_token'),
+            'token' => $this->config->get('module_pushketing_token'),
             'subscriber_id' => $customer,
             'tag' => array($tag)
         );
 
-        $ch = curl_init($this->config->get('pushketing_endpoint') . '/tag');
+        $ch = curl_init($this->config->get('pushketing_endpoint'));
         $payload = json_encode($request);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         $headers = array(
@@ -71,15 +75,20 @@ class ModelExtensionModulePushketing extends Model {
      * Model function for fetching order statuses from the database
      */
     public function getOrderStatuses(){
-        $data = array();
+        $this->load->model('setting/setting');
         $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "order_status`");
 
+        $data = array();
         if($query->num_rows){
             foreach ($query->rows as $row){
                 $data['statuses'][$row['order_status_id']][$row['language_id']] = $row['name'];
                 $data['languages'][$row['language_id']] = $this->getLanguageCode($row['language_id']);
             }
         }
+
+        $defaults = $this->model_setting_setting->getSetting('config');
+        $data['default']['language'] = isset($defaults['config_language']) ? $defaults['config_language'] : '';
+        $data['default']['currency'] = isset($defaults['config_currency']) ? $defaults['config_currency'] : '';
 
         return $data;
     }

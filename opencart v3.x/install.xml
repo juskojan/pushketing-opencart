@@ -25,7 +25,7 @@
             public function postTag($keyword, $value, $customer) {
                 $tag = array(
                     'keyword' => $keyword,
-                    'value' => $value
+                    'value' => array($value)
                 );
 
                 $request = array(
@@ -60,35 +60,6 @@
 			]]></add>
         </operation>
         <operation>
-            <search><![CDATA[if (!$query->row['total']) {]]></search>
-            <add position="before"><![CDATA[
-            if($this->config->get('module_pushketing_status')) {
-                $cookie_name = 'pk_customer';
-                if (isset($_COOKIE[$cookie_name])) {
-                    if ($query->row['total']) {
-                        $this->db->query("UPDATE " . DB_PREFIX . "cart SET pk_customer = '" . $this->db->escape($_COOKIE[$cookie_name]) . "' WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "'");
-                    }else{
-                        $this->db->query("INSERT " . DB_PREFIX . "cart SET pk_customer = '" . $this->db->escape($_COOKIE[$cookie_name]) ."', api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "', customer_id = '" . (int)$this->customer->getId() . "', session_id = '" . $this->db->escape($this->session->getId()) . "', product_id = '" . (int)$product_id . "', recurring_id = '" . (int)$recurring_id . "', `option` = '" . $this->db->escape(json_encode($option)) . "', quantity = '" . (int)$quantity . "', date_added = NOW()");
-                        return;
-                    }
-                }
-            }
-			]]></add>
-        </operation>
-        <operation>
-            <search><![CDATA[$this->weight = $registry->get('weight');]]></search>
-            <add position="after"><![CDATA[
-            if($this->config->get('module_pushketing_status')){
-                $abandoned_query = $this->db->query("SELECT pk_customer, product_id FROM " . DB_PREFIX . "cart WHERE (api_id > '0' OR customer_id = '0') AND date_added < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
-                foreach ($abandoned_query->rows as $cart_row) {
-                    if($cart_row['pk_customer']) {
-                        $this->postTag('product_abandon', $cart_row['product_id'], $cart_row['pk_customer']);
-                    }
-                }
-            }
-			]]></add>
-        </operation>
-        <operation>
             <search><![CDATA[public function remove($cart_id) {]]></search>
             <add position="after"><![CDATA[
             if($this->config->get('module_pushketing_status')) {
@@ -103,7 +74,7 @@
 			]]></add>
         </operation>
     </file>
-    <file path="catalog/controller/checkout/success">
+    <file path="catalog/controller/checkout/success.php">
         <operation>
             <search><![CDATA[if (isset($this->session->data['order_id'])) {]]></search>
             <add position="after"><![CDATA[
@@ -111,10 +82,24 @@
                 $cookie_name = 'pk_customer';
                 if(isset($_COOKIE[$cookie_name])) {
                     $this->load->model('extension/module/pushketing');
+                    $bought_products = array();
                     foreach ($this->cart->getProducts() as $boughtProduct) {
-                        $this->model_extension_module_pushketing->postTag('product_buy', $boughtProduct['product_id'], $_COOKIE[$cookie_name]);
+                        $bought_products[] = $boughtProduct['product_id'];
                     }
+                    $this->model_extension_module_pushketing->postTag('product_buy', $bought_products, $_COOKIE[$cookie_name]);
                 }
+            }
+			]]></add>
+        </operation>
+    </file>
+    <file path="catalog/model/checkout/order.php">
+        <operation>
+            <search><![CDATA[$this->cache->delete('product');]]></search>
+            <add position="before"><![CDATA[
+            if($this->config->get('module_pushketing_status')){
+                $response[$order_id] = $order_status_id;
+                $this->load->model('extension/module/pushketing');
+                $this->model_extension_module_pushketing->postTag('order_status_change', $response, '');
             }
 			]]></add>
         </operation>
