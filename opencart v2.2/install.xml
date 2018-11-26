@@ -2,6 +2,7 @@
 <modification>
     <name>Pushketing for OpenCart</name>
     <version>v1.0</version>
+    <link>https://www.pushketing.com</link>
     <code>Pushketing</code>
     <author>Jan Jusko</author>
     <file path="catalog/controller/product/product.php">
