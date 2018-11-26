@@ -1,5 +1,5 @@
 <?php
-class ModelExtensionModulePushketing extends Model {
+class ModelModulePushketing extends Model {
 
     /**
      * @param $keyword
@@ -25,7 +25,7 @@ class ModelExtensionModulePushketing extends Model {
             'tag' => array($tag)
         );
 
-        $ch = curl_init($this->config->get('pushketing_endpoint'));
+        $ch = curl_init($this->config->get('module_pushketing_endpoint'));
         $payload = json_encode($request);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         $headers = array(
@@ -48,7 +48,6 @@ class ModelExtensionModulePushketing extends Model {
         $this->load->model('localisation/currency');
 
         $data = array();
-
         $offset = $page * $limit;
 
         $count_query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "product");
@@ -126,6 +125,7 @@ class ModelExtensionModulePushketing extends Model {
 
         return $data;
     }
+
 
     /**
      * @param $language_id

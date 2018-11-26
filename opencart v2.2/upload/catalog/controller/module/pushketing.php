@@ -1,5 +1,5 @@
 <?php
-class ControllerExtensionModulePushketing extends Controller {
+class ControllerModulePushketing extends Controller {
     /**
      *  RESPONSE TO UNAUTHORIZED API REQUEST
      */
@@ -18,10 +18,11 @@ class ControllerExtensionModulePushketing extends Controller {
         header('HTTP/1.1 403 Forbidden');
         $response   =   array(
             'code'      =>  403,
-            'message'   =>  'Forbidden, please enable your module in OpenCart.',
+            'message'   =>  'Forbidden. Please enable your module in OpenCart.',
         );
         exit(json_encode($response));
     }
+
 
     /**
      *  IMPLEMENTATION OF /connectivityTest ENDPOINT
@@ -29,7 +30,7 @@ class ControllerExtensionModulePushketing extends Controller {
     public function connectivityTest() {
         error_reporting(0);
         // CHECK THE AUTH HEADER IF MATCHES THE TOKEN
-        if ($_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('module_pushketing_token')) {
+        if ($type == "Basic" && $_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('module_pushketing_token')) {
             if($this->config->get('module_pushketing_status')){
                 $response   =   array(
                     'code'      =>  200,
@@ -48,15 +49,17 @@ class ControllerExtensionModulePushketing extends Controller {
         }
     }
 
+
     /**
      *  IMPLEMENTATION OF /getOrderStatuses ENDPOINT
      */
     public function getOrderStatuses() {
         error_reporting(0);
+        // CHECK THE AUTH HEADER IF MATCHES THE TOKEN
         if ($_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('module_pushketing_token')) {
             if($this->config->get('module_pushketing_status')) {
-                $this->load->model('extension/module/pushketing');
-                $response = $this->model_extension_module_pushketing->getOrderStatuses();
+                $this->load->model('module/pushketing');
+                $response = $this->model_module_pushketing->getOrderStatuses();
 
                 header('Content-Type: application/json');
                 header('HTTP/1.1 200 OK');
@@ -67,7 +70,9 @@ class ControllerExtensionModulePushketing extends Controller {
         } else {
             $this->unauthorizedRequest();
         }
+
     }
+
 
     /**
      *  IMPLEMENTATION OF /getProducts ENDPOINT
@@ -76,8 +81,6 @@ class ControllerExtensionModulePushketing extends Controller {
         error_reporting(0);
         if ($_SERVER['PHP_AUTH_USER'] === "Token" && $_SERVER['PHP_AUTH_PW'] === $this->config->get('module_pushketing_token')) {
             if($this->config->get('module_pushketing_status')) {
-                $this->load->model('extension/module/pushketing');
-
                 if(isset($_GET['page'])) {
                     $page   = $_GET['page'];
                 } else {
@@ -90,7 +93,8 @@ class ControllerExtensionModulePushketing extends Controller {
                     $limit  = 100;
                 }
 
-                $response = $this->model_extension_module_pushketing->getProducts($page, $limit);
+                $this->load->model('module/pushketing');
+                $response = $this->model_module_pushketing->getProducts($page, $limit);
 
                 header('Content-Type: application/json');
                 header('HTTP/1.1 200 OK');
