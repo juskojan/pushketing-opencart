@@ -2,11 +2,11 @@
 
 define("PUSHKETING_API_ENDPOINT", "https://app.pushketing.com/api/tag");
 
-class ControllerModulePushketing extends Controller {
+class ControllerExtensionModulePushketing extends Controller {
     private $error = array();
 
     public function index() {
-        $this->load->language('module/pushketing');
+        $this->load->language('extension/module/pushketing');
 
         $this->document->setTitle($this->language->get('heading_title'));
 
@@ -17,7 +17,7 @@ class ControllerModulePushketing extends Controller {
 
             $this->session->data['success'] = $this->language->get('text_success');
 
-            $this->response->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], true));
+            $this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true));
         }
 
         /* Language variables */
@@ -69,19 +69,18 @@ class ControllerModulePushketing extends Controller {
         );
 
         $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_module'),
-            'href' => $this->url->link('extension/module', 'token=' . $this->session->data['token'], true)
+            'text' => $this->language->get('text_extension'),
+            'href' => $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true)
         );
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('heading_title'),
-            'href' => $this->url->link('module/pushketing', 'token=' . $this->session->data['token'], true)
+            'href' => $this->url->link('extension/module/pushketing', 'token=' . $this->session->data['token'], true)
         );
 
-
         /* Action URLs */
-        $data['action'] = $this->url->link('module/pushketing', 'token=' . $this->session->data['token'], true);
-        $data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], true);
+        $data['action'] = $this->url->link('extension/module/pushketing', 'token=' . $this->session->data['token'], true);
+        $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true);
 
         /* Form variables */
         if (isset($this->request->post['module_pushketing_status'])) {
@@ -99,12 +98,13 @@ class ControllerModulePushketing extends Controller {
         $data['module_pushketing_endpoint'] = PUSHKETING_API_ENDPOINT;
 
         /* Environment */
+        $data['token'] = $this->session->data['token'];
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
 
         /* GO! */
-        $this->response->setOutput($this->load->view('module/pushketing.tpl', $data));
+        $this->response->setOutput($this->load->view('extension/module/pushketing', $data));
     }
 
     /* Function runs at uninstall */
@@ -115,11 +115,10 @@ class ControllerModulePushketing extends Controller {
 
     /* Form submit validation function */
     protected function validate() {
-        if (!$this->user->hasPermission('modify', 'module/pushketing')) {
+        if (!$this->user->hasPermission('modify', 'extension/module/pushketing')) {
             $this->error['warning'] = $this->language->get('error_permission');
         }
 
-        // if module enabled, check the token and endpoint
         if (isset($this->request->post['module_pushketing_status']) && $this->request->post['module_pushketing_status']) {
             if (!$this->request->post['module_pushketing_token']) {
                 $this->error['module_pushketing_token'] = $this->language->get('error_module_pushketing_token');
